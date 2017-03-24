@@ -98,17 +98,8 @@ class SentimentSubscribeCallback(SubscribeCallback):
                     payloadNeut={"key": "Neutral Level","value": 0}
 
                 payloadScore={"key": "Score","value": message.message['score']}
-
-                if message.message['score'] > 0.25:
-                    payloadCoord={"key": "User Location Pos","value":TwitterSubscribeCallback.coord}
-                elif message.message['score'] < -0.25:
-                    payloadCoord={"key": "User Location Neg","value":TwitterSubscribeCallback.coord}
-                elif TwitterSubscribeCallback.coord == "none":
-                    payloadCoord={"key": "User Location","value":"No location data"}
-                else:
-                    payloadCoord={"key": "User Location Neut","value":TwitterSubscribeCallback.coord}
                 
-                payload=merge(payloadMsg,payloadPos,payloadNeg,payloadNeut,payloadScore,payloadCoord)
+                payload=merge(payloadMsg,payloadPos,payloadNeg,payloadNeut,payloadScore)
                 
                 print payload
                 payload = {"events": payload, "bucketKey": self.bucket_key}
@@ -126,17 +117,19 @@ class SentimentSubscribeCallback(SubscribeCallback):
 
 
 # Function that batches all the events associated with one tweet
-def merge(set1,set2,set3,set4,set5,set6):
+def merge(set1,set2,set3,set4,set5):
     lst=[]
     lst.append(set1)
     lst.append(set2)
     lst.append(set3)
     lst.append(set4)
     lst.append(set5)
-    lst.append(set6)
     return lst
 
 
+# Configure PubNub subscriptions
+pubnubRachel.add_listener(SentimentSubscribeCallback())
+pubnubRachel.subscribe().channels('sentiment-analysis').execute()
 
 #This handles Twitter authetification and the connection to Twitter Streaming API
 l = StdOutListener()
@@ -146,9 +139,3 @@ stream = Stream(auth, l)
 
 #This line filters Twitter Streams to capture data by the keywords below
 stream.filter(track=['Trump','trump','POTUS','potus'])
-
-# Configure PubNub subscriptions
-pubnubRachel.add_listener(SentimentSubscribeCallback())
-pubnubRachel.subscribe().channels('sentiment-analysis').execute()
-
-
