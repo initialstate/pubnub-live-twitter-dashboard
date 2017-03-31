@@ -96,7 +96,7 @@ pubnubPersonal.addListener({
 				payloadCoord = {"key": "User Location Pos","value":msg.coord}
 			} else if (msg.score < -0.25) {
 				payloadCoord = {"key": "User Location Neg","value":msg.coord}
-			} else if (typeof msg.coord != "undefined" && msg.coord != null && msg.coord.length > 0) {
+			} else if (typeof msg.coord == "undefined" || msg.coord == null || msg.coord.length == 0) {
 				payloadCoord = {"key": "User Location","value":"No location data"}
 			} else {
 				payloadCoord = {"key": "User Location Neut","value":msg.coord}
