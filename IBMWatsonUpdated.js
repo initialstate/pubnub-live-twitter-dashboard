@@ -65,7 +65,6 @@ export default (request) => {
 
             request.message.session_id = sessionId;
             request.message.body = body;
-            request.message.score = score;
             request.message.session_sentiment = sessionSentiment;
             request.message.score =
                 sessionSentiment.overall + (Math.random() / 10000);
